@@ -1,24 +1,18 @@
 module SingleCycleCPU(
     input clk,
     input rst,
-    /*
-    input [2:0] ExtOp,
-    input RegWr,
-    input ALUASrc,
-    input [1:0] ALUBSrc,
-    input [3:0] ALUctr,
-    input [2:0] MemOp,
-    input MemtoReg,
-    input MemWr,
-    input [2:0] Branch,
-    */
     output [31:0] nxtPC,
-    output [31:0] alures
+    output [31:0] alures,
+    output reg done
 );
     reg [31:0] PC;
     wire [31:0] nextPC;
     always @(negedge clk) begin
-        if (rst) PC <= 32'h00000000; else PC <= nextPC;
+        if (rst) begin 
+            PC <= 32'h00000000;
+            done <= 0;
+        end
+        else if (!done) PC <= nextPC;
     end
 
     wire [31:0] instr;
@@ -29,6 +23,10 @@ module SingleCycleCPU(
         .InstrMemEn(~rst),
         .InstrMemWr(rst)
     );
+
+    always @(*) begin
+        if (instr == 32'hdead10cc) done = 1; else done = 0;
+    end
 
     wire [2:0] ExtOp, Branch;
     wire [1:0] ALUBSrc;
@@ -64,7 +62,7 @@ module SingleCycleCPU(
         .ra(instr[19:15]),
         .rb(instr[24:20]),
         .we(RegWr),
-        .busw(busw),
+        .busw(busw & ~done),
         .rw(instr[11:7]),
         .busa(busa),
         .busb(busb)
@@ -87,7 +85,7 @@ module SingleCycleCPU(
     DataMem DataMem (
         .clk(clk),
         .WrEn(MemWr),
-        .MemEn(~rst),
+        .MemEn(~rst & ~done),
         .DataIn(busb),
         .MemOp(MemOp),
         .Addr(ALUresult),

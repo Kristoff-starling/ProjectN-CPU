@@ -16,6 +16,7 @@ module SingleCycleCPU_tst();
     */
     wire [31:0] nxtPC;
     wire [31:0] alures;
+    wire done;
     SingleCycleCPU CPU_impl(
         .clk(clk),
         .rst(rst),
@@ -31,7 +32,8 @@ module SingleCycleCPU_tst();
         .Branch(Branch),
         */
         .nxtPC(nxtPC),
-        .alures(alures)
+        .alures(alures),
+        .done(done)
     );
     always #5 clk = ~clk;
     initial begin
@@ -53,7 +55,6 @@ module SingleCycleCPU_tst();
         ALUASrc = 0;
         ALUBSrc = 2'b01;
         */
-        #10;
         // ori x11, x0, 1
         /*
         ExtOp = 3'b000;
@@ -66,7 +67,9 @@ module SingleCycleCPU_tst();
         MemWr = 0;
         Branch = 3'b000;
         */
-        #10;
-        $finish;
+        forever begin
+            #10;
+            if (done) $finish;
+        end
     end
 endmodule

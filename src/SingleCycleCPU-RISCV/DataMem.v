@@ -27,9 +27,7 @@ module DataMem(
               3'b001: datamem[Addr]<=DataIn[7:0];
               3'b010: {datamem[Addr+1],datamem[Addr]}<=DataIn[15:0];
             endcase
-            for (i = 0; i <= 10 * 4; i = i + 4) begin
-              $display("%h", {datamem[i + 3], datamem[i + 2], datamem[i + 1], datamem[i]});
-            end
+            $writememh("./dataout.txt", datamem, 0, 43);
         end
     end
 endmodule

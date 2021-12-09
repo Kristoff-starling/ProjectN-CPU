@@ -23,8 +23,8 @@ module ALU_RV32(
         .OF(OF), .SF(SF), .CF(CF), .ZF(zero),
         .f(input0)
     );
-    assign input1 = da | db;
-    assign input2 = da & db;
+    assign input1 = da & db;
+    assign input2 = da | db;
     assign input3 = da ^ db;
     barellshift shift(
         .din(da),
