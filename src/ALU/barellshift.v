@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 module barellshift(
     input [31:0] din,
     input [4:0] shamt,

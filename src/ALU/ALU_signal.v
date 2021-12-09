@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 module ALU_signal(
     input [3:0] aluctr,
     output SUBctr,

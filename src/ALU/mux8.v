@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 module mux8(
     input [31:0] a0, a1, a2, a3, a4, a5, a6, a7,
     input [2:0] s,

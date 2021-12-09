@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 module ALU_RV32(
     input [31:0] da, db,
     input [3:0] aluctr,

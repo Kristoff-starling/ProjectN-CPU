@@ -1,5 +1,3 @@
-`timescale 1ns / 1ps
-
 module Adder32_p(
     output [31:0] f,
     output OF,SF,CF,ZF,
