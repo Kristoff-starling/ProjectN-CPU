@@ -88,6 +88,7 @@ module SingleCycleCPU(
         .MemEn(~rst & ~done),
         .DataIn(busb),
         .MemOp(MemOp),
+        .WriteToFile(done),
         .Addr(ALUresult),
         .DataOut(dataout)
     );
