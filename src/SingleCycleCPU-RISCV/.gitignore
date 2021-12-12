@@ -1,2 +1,4 @@
-*.vcd
-*.exec
+/build
+data.txt
+dataout.txt
+instr.txt
