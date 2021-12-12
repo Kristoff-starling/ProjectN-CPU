@@ -37,7 +37,7 @@ module SingleCycleCPU_tst();
     );
     always #5 clk = ~clk;
     initial begin
-        $dumpfile("wave.vcd");
+        $dumpfile("./build/wave.vcd");
         $dumpvars(0, SingleCycleCPU_tst);
         clk = 1;
         rst = 1;
