@@ -21,7 +21,7 @@ module DataMem(
           3'b101: DataOut = {24'h000000, datamem[Addr]};
           3'b110: DataOut = {16'h0000, datamem[Addr + 1], datamem[Addr]};
         endcase
-    always @(posedge clk) begin
+    always @(negedge clk) begin
         if(WrEn && MemEn) begin
             case(MemOp)
               3'b000: {datamem[Addr + 3], datamem[Addr + 2], datamem[Addr + 1], datamem[Addr]} <= DataIn;
