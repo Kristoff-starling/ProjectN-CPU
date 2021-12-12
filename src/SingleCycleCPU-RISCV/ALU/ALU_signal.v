@@ -22,6 +22,7 @@ module ALU_signal(
             4'b0111: OPctr = 3'b001;
             4'b1000: OPctr = 3'b000;
             4'b1101: OPctr = 3'b100;
+            4'b1111: OPctr = 3'b101;
         endcase
     end
 endmodule
