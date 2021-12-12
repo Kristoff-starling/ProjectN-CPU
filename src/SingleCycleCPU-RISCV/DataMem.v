@@ -9,11 +9,11 @@ module DataMem(
   output reg [31:0] DataOut,
   output [7:0] d0, d1, d2, d3, d4, d5, d6, d7
 );
-    reg [7:0] datamem [4095:0];
+    reg [7:0] datamem [4095:0]; integer i;
     initial begin
         $readmemh("./data.txt", datamem);
     end
-    always@(*)
+    always @(*)
         case(MemOp)
           3'b000: DataOut = {datamem[Addr + 3], datamem[Addr + 2], datamem[Addr + 1], datamem[Addr]};
           3'b001: DataOut = {{24{datamem[Addr][7]}}, datamem[Addr]};
@@ -21,8 +21,7 @@ module DataMem(
           3'b101: DataOut = {24'h000000, datamem[Addr]};
           3'b110: DataOut = {16'h0000, datamem[Addr + 1], datamem[Addr]};
         endcase
-    integer i;
-    always@(negedge clk) begin
+    always @(posedge clk) begin
         if(WrEn && MemEn) begin
             case(MemOp)
               3'b000: {datamem[Addr + 3], datamem[Addr + 2], datamem[Addr + 1], datamem[Addr]} <= DataIn;
@@ -30,6 +29,8 @@ module DataMem(
               3'b010: {datamem[Addr+1] , datamem[Addr]} <= DataIn[15:0];
             endcase
         end
+    end
+    always @(posedge clk) begin
         if (WriteToFile) $writememh("./dataout.txt", datamem, 0, 43);
     end
 

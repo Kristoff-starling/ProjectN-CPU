@@ -18,7 +18,7 @@ module NextAddr(
     wire [31:0] da, db;
     assign db = (NxtBSrc == 1) ? imm : 32'h00000004;
     assign da = (NxtASrc == 1) ? busa : currentPC;
-    Adder32_p adder (
+    Adder32_p adder_jump (
         .x(da),
         .y(db),
         .sub(1'b0),

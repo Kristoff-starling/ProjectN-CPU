@@ -1,4 +1,4 @@
-`timescale 1ns / 1ns
+`timescale 1ns / 1ps
 
 module SingleCycleCPU_tst();
     reg clk;
@@ -35,13 +35,13 @@ module SingleCycleCPU_tst();
         .alures(alures),
         .done(done)
     );
-    always #5 clk = ~clk;
+    always #1 clk = ~clk;
     initial begin
         $dumpfile("./build/wave.vcd");
         $dumpvars(0, SingleCycleCPU_tst);
         clk = 1;
         rst = 1;
-        #10;
+        #2;
         rst = 0;
         // lw, x11, 0(x0)
         /*
@@ -68,7 +68,7 @@ module SingleCycleCPU_tst();
         Branch = 3'b000;
         */
         forever begin
-            #10;
+            #2;
             if (done) $finish;
         end
     end

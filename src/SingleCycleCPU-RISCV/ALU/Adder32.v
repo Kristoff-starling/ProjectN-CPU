@@ -1,5 +1,5 @@
 module Adder32(
-    output [31:0] f,
+    output [31:0] result,
     output cout,
     input [31:0] x,y,
     input sub
@@ -27,16 +27,19 @@ module Adder32(
         .c(c[4:1])
     );
     assign c[0]=sub;
+    wire [7:0] ff[3:0];
     generate
         for (i=0;i<=3;i=i+1) begin
-            CLA8 adder(
+            CLA8 adder8(
                 .x(x[i*8+7:i*8]),
                 .y(y[i*8+7:i*8]),
                 .cin(c[i]),
                 .cout(cout_temp[i]),
-                .f(f[i*8+7:i*8])
+                .f(ff[i])
             );
         end
     endgenerate
+
+    assign result = {ff[3], ff[2], ff[1], ff[0]};
     assign cout = cout_temp[3];
 endmodule

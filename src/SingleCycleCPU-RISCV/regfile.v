@@ -20,7 +20,7 @@ module regfile(
         busa = registers[ra];
         busb = registers[rb];
     end
-    always @(negedge clk) begin
+    always @(posedge clk) begin
         if (we && rw) registers[rw] <= busw;
     end
     assign x0 = registers[0]; assign x1 = registers[1]; assign x2 = registers[2]; assign x3 = registers[3];

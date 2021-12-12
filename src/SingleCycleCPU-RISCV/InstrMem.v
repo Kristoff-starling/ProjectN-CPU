@@ -7,7 +7,7 @@ module InstrMem(
 );
     reg [31:0] instrmem[1023:0];
     initial begin
-        $readmemh("./instr.txt",instrmem);
+        $readmemh("./instr.txt", instrmem);
     end
     always @(posedge clk) begin
         if (InstrMemEn) instr <= instrmem[Addr >> 2];

@@ -6,10 +6,11 @@ module SingleCycleCPU(
     output reg done
 );
     reg [31:0] PC;
-    wire [31:0] nextPC;
+    reg [31:0] nextPC;
     always @(negedge clk) begin
         if (rst) begin 
             PC <= 32'h00000000;
+            nextPC <= 32'h00000000;
             done <= 0;
         end
         else if (!done) PC <= nextPC;
@@ -102,9 +103,11 @@ module SingleCycleCPU(
         .imm(imm),
         .currentPC(PC),
         .busa(busa),
-        .nextPC(nextPC)
+        .nextPC(nxtPC)
     );
 
-    assign nxtPC = nextPC;
+    always @(*) nextPC = nxtPC;
+
+    // assign nxtPC = nextPC;
     assign alures = ALUresult;
 endmodule

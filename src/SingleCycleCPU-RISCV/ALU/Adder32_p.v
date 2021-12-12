@@ -7,12 +7,12 @@ module Adder32_p(
 );
     wire [31:0] tmp;
     assign tmp = (sub ? ~y : y);
-    Adder32 adder(
+    Adder32 adder32(
         .x(x),
         .y(tmp),
         .sub(sub),
         .cout(cout),
-        .f(f)
+        .result(f)
     );
     assign OF = (!x[31] & !tmp[31] & f[31]) | (x[31] & tmp[31] & !f[31]);
     assign SF = f[31];
