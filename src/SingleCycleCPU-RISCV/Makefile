@@ -1,14 +1,34 @@
-src = $(wildcard *.v ./ALU/*.v)
+.PHONY: all emu clean-all run-emu
 
-.PHONY: run clean display
+OBJ_DIR := output
+SRC_DIR := src
+V_FILES := $(shell find $(SRC_DIR) -name "*.v")
 
-run:
-	@mkdir -p ./build
-	iverilog -o ./build/main.exec $(src)
-	./build/main.exec
+EMU_SRC_DIR := emu
+EMU_TOP_MODULE := cpu_tst
+EMU_MK := $(OBJ_DIR)/emu.mk
+EMU_BIN := $(OBJ_DIR)/emulator
+EMU_CXXFILES := $(shell find $(EMU_SRC_DIR) -name "*.cpp")
+TEST = sw sb sh \
+ lw lb lh lbu lhu\
+ sll slli slt slti sltiu sltu sra srai srl srli \
+ add addi sub and andi or ori xor xori \
+ lui auipc \
+ beq bge bgeu blt bltu bne \
+ jal jalr \
+ simple
 
-clean:
-	rm ./build -r
+emu: $(EMU_BIN)
+run-emu: emu
+	@cd testcase && ../$(EMU_BIN) $(TEST)
 
-display:
-	gtkwave ./build/wave.vcd
+$(EMU_MK): $(V_FILES) $(EMU_CXXFILES)
+	@verilator --cc --exe --top-module $(EMU_TOP_MODULE) \
+	  -o $(notdir $(EMU_BIN)) -Mdir $(@D) \
+	  --prefix $(basename $(notdir $(EMU_MK))) $^ -CFLAGS "-g"
+
+$(EMU_BIN): $(EMU_MK) $(EMU_CXXFILES)
+	@cd $(@D) && make -s -f $(notdir $<)
+
+clean-all:
+	rm -rf $(OBJ_DIR)
