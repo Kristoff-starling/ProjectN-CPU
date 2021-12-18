@@ -1,47 +1,22 @@
-# RISCV-TESTFRAMEWORK
+# SingleCycleCPU-RISCV
 
 ## 安装方法
 
+该框架来自 addrices/RISCV-TESTFRAMEWORK
 ```
 git clone https://github.com/addrices/RISCV-TESTFRAMEWORK
 
 sudo apt-get install verilator
 ```
-注意使用的 verilator 版本为 3.916，ubuntu18.04 的源可以用的。
+若使用 版本为 4.038 的 verilator 可能需要克隆仓库的 4_038 分支。
 
-testcase部分
-```
-git clone --recursive git@github.com:addrices/riscv-tests.git     //此仓库中包含有编译好的riscv32-unknown-elf编译链
+## 测试程序
 
-cd riscv-tests
-
-tar zxf gcc_riscv32-linux-7.3.0.tar.gz
-
-sudo mv gcc_riscv32 /opt/
-```
-
-之后在.bashrc或者.zshrc中文件中添加环境变量
-```
-export RISCV_HOME=/opt/gcc_riscv32
-export PATH=$RISCV_HOME/bin:$PATH
-```
-
-设置好编译器后，进入riscv-tests目录
-```
-autoconf
-./configure --with-xlen=32
-make isa
-```
-我只编译了rv32ui的测试部分，其中得到的.hex和_d.hex分别是imem和dmem中的内容,.dump是与之对应的汇编码。
-
-
-## 你的工作
-
-在 mycpu.v 这个文件中添加你的 cpu 逻辑。在当前目录下运行`make run-emu`进行测试。
+testcase 中包含了 riscv-test 官方测试集中rv32ui的测试部分，其中得到的.hex和_d.hex分别是imem和dmem中的内容,.dump是与之对应的汇编码。
 
 ## 框架原理
 
-我提供了一个正确的单周期 CPU 实现的 Verilator 编译版本，将 mycpu 实现之后，在每个周期结束时将会把双方执行的指令以及寄存器堆的值逐一比对，及时检查出错误。
+框架代码提供了一个正确的单周期 CPU 实现的 Verilator 编译版本，将 mycpu 实现之后，在每个周期结束时将会把双方执行的指令以及寄存器堆的值逐一比对，及时检查出错误。
 
 ## 接口说明
 
@@ -60,6 +35,6 @@ cpu_shell 中提供了 instr_mem 和 data_mem 的初始化，最好阅读一下�
 
 3. cpu的pc的起始地址为0x80000000
 
-## Debug
+## 调试
 
 在实现的模块中添加`$display()`语句打印出相关信息。
