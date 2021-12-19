@@ -1,5 +1,11 @@
 # ProjectN-CPU
-To run SimpleCycleCPU-RISCV, you should add $CPU_HOME to your environment variables:
+The project includes:
+- [x] RISCV Single Cycle CPU
+- [x] RV32I standard tests
+- [ ] I/O Devices
+- [ ] RISCV 5-stage Pipeline CPU
+
+To run tests, you should install verilog 4.038
 ```bash
-export CPU_HOME = "ProjectN-CPU's location in your computer"
+sudo apt-get install verilog
 ```
