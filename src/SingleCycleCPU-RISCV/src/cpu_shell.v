@@ -173,8 +173,7 @@ module testdmem(
 
 	
 	reg [31:0] ram [32767:0];
-	/*
-	always @(posedge rdclock)
+	always @(negedge rdclock)
 	begin
 	   if(wren)
 			tempout <= ram[wraddress];
@@ -182,11 +181,6 @@ module testdmem(
 		begin
 			q <= ram[rdaddress];
 		end
-	end
-	*/
-	always @(*) begin
-		if (wren) tempout = ram[wraddress];
-		else q = ram[rdaddress];
 	end
 	
 	assign tempin[7:0]   = (byteena_a[0])? data[7:0]  : tempout[7:0];
@@ -198,7 +192,6 @@ module testdmem(
 	begin
 		if(wren) 
 		begin
-			// $display("wraddr datain byteena_a: %h %h %h", wraddress, data, byteena_a);
 			ram[wraddress]<=tempin;
 		end
 	end
@@ -253,7 +246,6 @@ always@(*)
 begin
 	if(we==1'b1)
 	begin
-		// $display("memin: %h", memin);
 		case(memop)
 			3'b001://sb
 			begin

@@ -51,9 +51,7 @@ module rv32is(
 	reg [31:0] PC;
     reg [31:0] nextPC;
     always @(posedge clk) begin
-        if (rst) begin 
-            PC <= 32'h80000000;
-        end
+        if (rst) PC <= 32'h80000000;
         else begin
 			if (!done) PC <= nextPC;
 		end
@@ -62,17 +60,10 @@ module rv32is(
 		dbg_pc <= PC;
 	end
 	// InstrMem
-	assign imemaddr = PC;
-	assign imemclk = ~clk;
+	assign imemaddr = nextPC;
+	assign imemclk = clk;
 	wire [31:0] instr; assign instr = imemdataout;	
-	assign done = (instr == 32'hdead10cc) ? 1 : 0;
-	/*
-	always @(instr) begin
-		if (instr[6:2] == 5'b01000) begin
-		$display("%h %h", dbg_pc, instr);
-		end
-	end
-	*/
+	assign done = (rst == 1'b1 ? 0 : (instr == 32'hdead10cc) ? 1 : 0);
 	// Signal Control	
 	wire [2:0] ExtOp, Branch;
     wire [1:0] ALUBSrc;
@@ -83,7 +74,7 @@ module rv32is(
         .op(instr[6:2]),
         .func3(instr[14:12]),
         .func7(instr[30]),
-		.done(done),
+		.ban(done | rst),
         .ExtOp(ExtOp),
         .Branch(Branch),
         .ALUBSrc(ALUBSrc),
@@ -167,20 +158,10 @@ module rv32is(
 	assign dmemwrclk = clk;
 	assign dmemop = MemOp;
 	assign busw = (MemtoReg == 1) ? dataout : ALUresult;
-	/*
-	always @(*) begin
-		// $display("Addr %h\n MemOp %h", dmemaddr, dmemop);
-		if (dbg_pc == 32'h8000008c) begin
-		$display("busw: %h", busw);
-		$display("datain: %h", dmemdatain);
-		$display("dmemwe %h", dmemwe);
-		$display("dmemop: %h", dmemop);
-		end
-	end
-	*/
 	// NextAddr
 	NextAddr NextAddr (
         .zero(zero),
+		.rst(rst),
         .result0(ALUresult[0]),
         .Branch(Branch),
         .imm(imm),

@@ -3,7 +3,7 @@ module CtrSignal(
     input [4:0] op,
     input [2:0] func3,
     input func7,
-    input done,
+    input ban,
     output reg [2:0] ExtOp,
     output reg [2:0] Branch,
     output reg [1:0] ALUBSrc,
@@ -12,7 +12,7 @@ module CtrSignal(
     output reg RegWr, MemtoReg, ALUASrc, MemWr
 );
     always @(*) begin
-        if (done) begin
+        if (ban) begin
             ExtOp = 3'b000;
             Branch = 3'b000;
             ALUBSrc = 2'b00;
