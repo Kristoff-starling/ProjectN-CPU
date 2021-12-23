@@ -139,7 +139,7 @@ module rv32is(
 	// ALU
 	wire [31:0] ALUa, ALUb;
     assign ALUa = (ALUASrc == 1) ? dbg_pc : busa;
-    assign ALUb = (ALUBSrc == 2'b00) ? busb : ((ALUBSrc === 2'b01) ? imm : 32'h00000004);
+    assign ALUb = (ALUBSrc == 2'b00) ? busb : ((ALUBSrc == 2'b01) ? imm : 32'h00000004);
     wire zero; wire [31:0] ALUresult;
     ALU_RV32 ALU_RV32 (
         .da(ALUa),
