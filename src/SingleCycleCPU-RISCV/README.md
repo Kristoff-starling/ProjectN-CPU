@@ -3,12 +3,23 @@
 ## 安装方法
 
 该框架来自 addrices/RISCV-TESTFRAMEWORK
-```
+```bash
 git clone https://github.com/addrices/RISCV-TESTFRAMEWORK
 
 sudo apt-get install verilator
 ```
+
 若使用 版本为 4.038 的 verilator 可能需要克隆仓库的 4_038 分支。
+
+## 测试方法
+
+在 `/SRC/SingleCycleCPU-RISCV` 目录下输入命令
+
+```bash
+make run-emu
+```
+
+即可进行一键回归测试。
 
 ## 测试程序
 
@@ -16,25 +27,21 @@ testcase 中包含了 riscv-test 官方测试集中rv32ui的测试部分，其�
 
 ## 框架原理
 
-框架代码提供了一个正确的单周期 CPU 实现的 Verilator 编译版本，将 mycpu 实现之后，在每个周期结束时将会把双方执行的指令以及寄存器堆的值逐一比对，及时检查出错误。
+`cpu_shell.v`  是顶层模块，其中包含了同步的数据存储器和指令存储器。在 `reset==1` 时，该程序会将对应测试文件的指令代码写入到指令存储器中。之后 `cpu_shell.v` 主要负责 CPU 和 Mem 的数据交互。
 
-## 接口说明
+`mycpu.v` 是 CPU 的外部框架，用于将 CPU 的各个部分连接起来。以下梳理地址 addr 处的指令的执行过程：
 
-查阅注释。
+* 在 `PC=addr-4` 的时钟周期的后半部分，即上升沿到来时，PC 被提前赋成 nextPC，即 addr。CPU 会拿着 nextPC 去指令寄存器中取 addr 处的指令，根据指令进行译码，产生控制信号，并到寄存器堆中取操作数，在 ALU 中计算出结果。这一部分均为组合电路，全部在 `dbg_pc = addr-4` 的时候提前完成。
+* 在 `PC=addr` 的时钟周期的前半部分，dbg_pc 被赋成 PC，用于 difftest。此时下地址逻辑（组合电路）的输出也会相应地更新，`nextPC=addr+4`，为本周期后段提前做 `addr+4` 处的指令做准备。下降沿到来时，load 类型指令可以从数据存储器中取数。
+* 在 `PC=addr` 的时钟周期的后半部分，虽然 dbg_pc 仍为 addr，但实际上 CPU 已经完全在处理 `addr+4` 处的指令了。在下降沿到来时，CPU 完成对寄存器堆的回写和数据存储器的回写。
 
-makefile 文件可以通过`make xxx -nb`查阅其需要的指令。执行流程是先将我们实现的 CPU 使用 Verilator 编译成 c++代码,然后 main.cpp 中会调用 SingleRiscv 和 mycpu 对测试进行比对。在 Makefile 中的第 12 行 TEST 修改为待测用例。
+`ALU_RV32.v` 是一个封装好的 ALU 模块，其中调用了 `Adder32_p.v`，这是一个组间并行，组内并行的加法器。该加法器的另一个实例化模块用在下地址逻辑中用于计算 PC+4 的值。`Adder32.v` `CLA4.v` `CLA8.v` `CLU4.v` `FA.v` `mux8.v` `barrelshift.v` 均为 ALU 的子模块。
 
-所有 mem 的读行为延后一个周期，配合板上使用 bram 实现。
+`Regfile.v` 是寄存器堆，支持双口组合读数据和单口上升沿时序写数据。
 
-cpu_shell 中提供了 instr_mem 和 data_mem 的初始化，最好阅读一下理解原理。
+`NextAddr.v` 和 `JumpCtr.v` 是下地址模块，完全是组合逻辑。为了在 difftest 开始阶段匹配上，当 rst 拉高时下地址模块会输出当前 PC 而不是 nextPC。
 
-## 注意事项
-1. 额外支持一条空指令0xdead10cc，当读取到此指令时，CPU停滞在该指令，不做任何操作，并拉高done信号。
+`InstrToImm.v` 是立即数扩展器。
 
-2. cpu每完成一条指令的写回，拉高wb信号，并在dbg_pc上输出该指令的PC。
+`CtrSignal.v` 是控制信号生成器，完全是组合逻辑。当 done 信号到来时，控制信号全部为 0。
 
-3. cpu的pc的起始地址为0x80000000
-
-## 调试
-
-在实现的模块中添加`$display()`语句打印出相关信息。
