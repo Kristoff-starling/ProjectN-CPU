@@ -1,4 +1,3 @@
-/* verilator lint_off PINMISSING */
 module ALU_RV32(
     input [31:0] da, db,
     input [3:0] aluctr,
@@ -15,14 +14,15 @@ module ALU_RV32(
         .SIGctr(SIGctr)
     );
 
-    wire CF, OF, SF, comF;
+    wire CF, OF, SF, comF, cout;
     wire [31:0] input0, input1, input2, input3, input4, input5, input6, input7;
     Adder32_p adder (
         .sub(SUBctr),
         .x(da),
         .y(db),
         .OF(OF), .SF(SF), .CF(CF), .ZF(zero),
-        .f(input0)
+        .f(input0),
+        .cout(cout)
     );
     assign input1 = da & db;
     assign input2 = da | db;
@@ -45,4 +45,7 @@ module ALU_RV32(
         .s(OPctr),
         .result(result)
     );
+
+    // always@(*)
+    // $display("ALU: %h %h %h %h", da, db, aluctr, zero);
 endmodule
