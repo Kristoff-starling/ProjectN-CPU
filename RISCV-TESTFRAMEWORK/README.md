@@ -1,6 +1,6 @@
 # RISCV-TESTFRAMEWORK
 
-这是来自 [addrices](github.com/addrices/RISCV-TESTFRAMEWORK) 的一份基于 verilator 的 riscv CPU验证框架。
+这是来自 [addrices](https://github.com/addrices/RISCV-TESTFRAMEWORK) 的一份基于 verilator 的 riscv CPU验证框架。
 
 ## 安装方法
 
