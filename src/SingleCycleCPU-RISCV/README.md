@@ -1,32 +1,5 @@
 # SingleCycleCPU-RISCV
 
-## 安装方法
-
-该框架来自 addrices/RISCV-TESTFRAMEWORK
-```bash
-git clone https://github.com/addrices/RISCV-TESTFRAMEWORK
-
-sudo apt-get install verilator
-```
-
-若使用 版本为 4.038 的 verilator 可能需要克隆仓库的 4_038 分支。
-
-## 测试方法
-
-在 `/SRC/SingleCycleCPU-RISCV` 目录下输入命令
-
-```bash
-make run-emu
-```
-
-即可进行一键回归测试。
-
-## 测试程序
-
-testcase 中包含了 riscv-test 官方测试集中rv32ui的测试部分，其中得到的.hex和_d.hex分别是imem和dmem中的内容,.dump是与之对应的汇编码。
-
-## 框架原理
-
 `cpu_shell.v`  是顶层模块，其中包含了同步的数据存储器和指令存储器。在 `reset==1` 时，该程序会将对应测试文件的指令代码写入到指令存储器中。之后 `cpu_shell.v` 主要负责 CPU 和 Mem 的数据交互。
 
 `mycpu.v` 是 CPU 的外部框架，用于将 CPU 的各个部分连接起来。以下梳理地址 addr 处的指令的执行过程：
