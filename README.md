@@ -9,7 +9,7 @@ The project includes:
 
  A Chinese version of technical details is available at `/src/SingleCycleCPU-RISCV`.
 
-## RV32I Standard tests
+## RV32I Standard Tests
 
 To run tests, you should install verilog 4.038:
 
@@ -17,7 +17,7 @@ To run tests, you should install verilog 4.038:
 sudo apt-get install verilog
 ```
 
-You can follow the instructions in `/RISCV-TESTFRAMEWORK` for details.
+You can follow the instructions in `/RISCV-TESTFRAMEWORK` for details. You should put all the `.v` files in `/src` in `/RISCV-TESTFRAMEWORK/src` (without folders) so that the Makefile can detect them.
 
 (Note: some dummy tests are available at `dummy` , it includes a bubblesort program written in assembly and some load-store tests.)
 
